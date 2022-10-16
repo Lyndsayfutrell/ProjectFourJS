@@ -3,11 +3,13 @@
  * app.js */
 
 const phrase = new Phrase();
-const game = new Game();
+
 
 //Event listener to start/restart game
+let game;
 const buttonReset = document.querySelector('#btn__reset');
 buttonReset.addEventListener ('click', (e) => {
+    game = new Game();
     game.startGame();
 
 });
@@ -23,6 +25,7 @@ qwerty.addEventListener('click', e => {
     }
 });
 
+//Event listener for keyboard
 document.addEventListener('keydown', e => {
     if(overlay.style.display != 'flex'){
     letter = e.key

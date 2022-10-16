@@ -13,6 +13,8 @@ class Game{
       'good vibes only'];
       this.missed = 0;
     }
+
+    //Clears overlays and add the active phrase
     startGame(){
         overlay.style.display = "none";
         overlay.classList.remove('win');
@@ -21,43 +23,60 @@ class Game{
         this.activePhrase.addPhraseToDisplay(phrase);
     }
 
+    //Selects phrase at random from array of phrases
     getRandomPhrase() {
         const number = this.phrases.length;
         const randomNumber = Math.floor(Math.random() * number);
         return new Phrase(this.phrases[randomNumber]);
     }
 
+    //Disables button that was selected and checks if letter is in phrase
     handleInteraction(e) {
-        phrase.showMatchedLetter(e);
-        phrase.checkLetter(e);
-        this.removeLife(e);
-        phrase.match = null;
-
+        e.disabled = true;
+        if(phrase.checkLetter(e)) {
+            e.classList.add('chosen');
+            e.classList.add('correct');
+            phrase.showMatchedLetter(e);
+            this.checkForWin();
+        } else {
+            e.classList.add('chosen');
+            e.classList.add('wrong');
+            this.removeLife(e);
+            this.checkForWin();
+            }
     }
 
+    //Checks win or loss condition and runs game over if met
     checkForWin(){
-        this.gameOver();
-    }
-
-    gameOver() {
         const hidden = document.getElementsByClassName('letter');
         const show = document.getElementsByClassName('show');
         if (hidden.length === show.length) {
+            this.gameOver(true);
+    
+        } else if(this.missed > 4) {
+            this.gameOver(false);
+        }
+    }
+
+    //Displays win or loss screen and runs reset game
+    gameOver(win) {
+        if(win === true) {
             h2.innerHTML = 'YOU WIN!!'
             overlay.classList.add('win');
             overlay.style.display = 'flex';
             buttonReset.textContent = 'reset game';
-            game.resetGame();
-    
+            game.resetGame();  
         }
-        if (this.missed > 4) {
+        else if(win === false){
             h2.innerHTML = 'GAME OVER'
             overlay.classList.add('lose');
             overlay.style.display = 'flex';
             buttonReset.textContent = 'play again';
             game.resetGame();
-        };
+        }
     }
+
+    //Resets game
     resetGame () {
         const ul = document.getElementById('phrase');
         const img = document.querySelectorAll('IMG');
@@ -67,6 +86,7 @@ class Game{
             button[i].classList.remove('chosen');
             button[i].classList.remove('wrong');
             button[i].classList.remove('correct');
+            button[i].disabled = false;
         }
         this.missed = 0;
         for (let i= 0; i<hearts.length; i++) {
@@ -74,14 +94,7 @@ class Game{
         }
     }
     removeLife(e) {
-            if (phrase.match === null) {
-                e.classList.add('wrong');
-                hearts[this.missed].src = 'images/lostHeart.png';
-                this.missed ++;
-                this.gameOver();
-            } else {
-                e.classList.add('correct');
-            }
-        }
-
+        hearts[this.missed].src = 'images/lostHeart.png';
+        this.missed ++;
+    }
 }

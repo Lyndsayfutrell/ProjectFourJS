@@ -9,6 +9,7 @@ class Phrase{
         this.match = null;
     }
 
+    //Adds active phrase to display
     addPhraseToDisplay() {
         const ul = document.getElementById('phrase');
         for (let i = 0; i < this.phrase.length; i++) {
@@ -27,25 +28,21 @@ class Phrase{
             }
         };
     }
+
+    //Checks if letter is in active phrase
     checkLetter(e) {
-        if (e.tagName === 'BUTTON' && e.className !== 'chosen') {
-            this.match = phrase.showMatchedLetter(e.textContent);
-            e.classList.add('chosen');
-            game.checkForWin();
-            return this.match;
-        } else {
-            game.removeLife(e);
+        console.log(game.activePhrase.phrase);
+        if(game.activePhrase.phrase.includes(e.innerHTML)){
+            return true;
         }
     }
+    
     showMatchedLetter(button) {
         const letter = document.getElementsByClassName('letter');
         for (let i = 0; i < letter.length; i++) {
-            if (letter[i].textContent === button) {
-            this.match = button;
-            letter[i].classList.add('show')
-                }
-            };
-        return this.match;
+            if (letter[i].textContent === button.textContent) {
+                letter[i].classList.add('show');
+            }
+        }
     }
-
 }
